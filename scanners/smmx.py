@@ -9,6 +9,7 @@ import pathlib
 import string
 import collections
 import copy
+import inspect
 
 # converts string into words
 # see: https://stackoverflow.com/questions/743806/how-to-split-a-string-into-a-list
@@ -30,11 +31,12 @@ except:
 
 
 class SearchModelContext(collections.MutableMapping):
-    def __init__(self, filenames):
+    def __init__(self, filenames = None):
         super(SearchModelContext, self).__init__()
-        self.filenames = filenames
-        self.length = 1
-        self.count = 1
+        if filenames != None:
+            self.filenames = filenames
+            self.length = 1
+            self.count = 1
         #print(args)
         #print(kwardgs)
         # self.store = dict()
@@ -56,7 +58,11 @@ class SearchModelContext(collections.MutableMapping):
 
     def copy(self):
         # print(getattr(self, 'original_key'))
-        return self
+        pcopy = SearchModelContext()
+        for k, v in inspect.getmembers(self):
+            if k != '__weakref__':
+                setattr(pcopy, k, v)
+        return pcopy
         # return copy.deepcopy(self)
 
     def __getitem__(self, key):
