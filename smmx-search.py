@@ -96,9 +96,10 @@ def on_select(event):
 test_list = []
 
 root = tk.Tk()
+root.minsize(width=300, height=600)
 
 entry = tk.Entry(root)
-entry.pack()
+entry.pack(fill='x')
 entry.bind('<KeyRelease>', on_keyrelease)
 
 listbox = tk.Listbox(root)
