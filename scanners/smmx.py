@@ -118,7 +118,7 @@ def read_smmx_as_words(filename):
                     # word_list = shlex.split(notags)
                     word_list = notags.split()
                     # words = { word_list[i]: SearchModelContext([filename]) for i in range(0, len(word_list)) }
-                    words = {word_list[i].decode("utf-8"): SearchModelContext(
+                    words = {word_list[i].decode("utf-8").lower(): SearchModelContext(
                         [filename]) for i in range(0, len(word_list))}
                     return words
                 except:
