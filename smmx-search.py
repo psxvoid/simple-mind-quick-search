@@ -16,9 +16,12 @@ import subprocess
 import platform
 from pynput import keyboard
 import threading
+import copy
 
 rootdir = 'C:/Users/xxx/Dropbox/SimpleMind'
 words, paths = scan(rootdir)
+words_copy = copy.deepcopy(words)
+
 autocomplete = AutoComplete(words=words)
 contexts = []
 selected = None
@@ -36,13 +39,19 @@ def on_keyrelease(event):
     if value == '':
         data = test_list
     else:
-        # search using fast-autocomplete
-        results = autocomplete.search(word=value, max_cost=3, size=3)
+        # search first using partial match (autocomplete may not handle it)
+        results = []
+        for word in words_copy:
+            if value in word.lower():
+                results.append([word])
+        results = results + autocomplete.search(word=value, max_cost=3, size=10)
+        print('Results:')
+        print(results)
         filepaths = []
         data = []
         for words in results:
             for word in words:
-                context = autocomplete.words[word]
+                context = words_copy[word]
 
                 for path in context.filenames:
                     if path not in filepaths:
@@ -61,7 +70,7 @@ def listbox_update(data):
     listbox.delete(0, 'end')
 
     # sorting data
-    data = sorted(data, key=str.lower)
+    # data = sorted(data, key=str.lower)
 
     # put new data
     for item in data:
@@ -71,7 +80,7 @@ def listbox_update(data):
 def on_select(event):
     # display element selected on list
     print('(event) previous:', event.widget.get('active'))
-    print('(event)  current:', event.widget.get(event.widget.curselection()))
+    print('(event) current:', event.widget.get(event.widget.curselection()))
     print('---')
     global selected
     selected = event.widget.get(event.widget.curselection())
