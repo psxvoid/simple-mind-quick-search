@@ -12,13 +12,15 @@ import tkinter as tk
 from fast_autocomplete import AutoComplete
 from scanners.smmx import scan
 from pathlib import Path
-import subprocess, os, platform
+import subprocess
+import platform
+from pynput import keyboard
+import threading
 
 rootdir = 'C:/Users/xxx/Dropbox/SimpleMind'
 words, paths = scan(rootdir)
 autocomplete = AutoComplete(words=words)
 contexts = []
-
 
 
 def on_keyrelease(event):
@@ -47,6 +49,7 @@ def on_keyrelease(event):
                         filename = os.path.basename(path)
                         if filename not in data:
                             data.append(filename)
+                contexts.append(context)
 
     # update data in listbox
     listbox_update(data)
@@ -87,6 +90,9 @@ def on_select(event):
                 os.startfile(filepath)
             else:                                   # linux variants
                 subprocess.call(('xdg-open', filepath))
+    else:
+        print('No matching entries found...')
+        print('Context count: {}'.format(len(contexts)))
 
 
 # --- main ---
@@ -97,6 +103,9 @@ test_list = []
 
 root = tk.Tk()
 root.minsize(width=300, height=600)
+
+is_opened = True
+
 
 entry = tk.Entry(root)
 entry.pack(fill='x')
@@ -111,5 +120,49 @@ listbox.pack(side='left', fill='both', expand=True)
 #listbox.bind('<Double-Button-1>', on_select)
 listbox.bind('<<ListboxSelect>>', on_select)
 listbox_update(test_list)
+
+
+def close(event):
+    root.withdraw()
+
+    global is_opened
+    is_opened = False
+    # root.iconify()
+
+
+def open():
+    root.deiconify()
+    entry.focus_set()
+
+    global is_opened
+    is_opened = True
+
+
+def toggle():
+    global is_opened
+
+    if is_opened:
+        root.withdraw()
+    else:
+        root.deiconify()
+        entry.focus_set()
+
+    is_opened = not is_opened
+
+
+root.bind('<Escape>', close)
+
+
+def processGlobalHotkeys():
+    print('listening...')
+    with keyboard.GlobalHotKeys({'<alt>+<shift>+s': toggle}) as h:
+        h.join()
+
+
+thread = threading.Thread(target=processGlobalHotkeys, args=())
+thread.daemon = False
+thread.start()
+
+close('any')
 
 root.mainloop()
