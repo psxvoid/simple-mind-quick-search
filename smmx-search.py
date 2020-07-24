@@ -17,12 +17,13 @@ words, paths = scan(rootdir)
 autocomplete = AutoComplete(words=words)
 contexts = []
 
+
 def on_keyrelease(event):
-    
+
     # get text from entry
     value = event.widget.get()
     value = value.strip().lower()
-    
+
     # get data from test_list
     if value == '':
         data = test_list
@@ -43,12 +44,13 @@ def on_keyrelease(event):
 
     # update data in listbox
     listbox_update(data)
-    
+
+
 def listbox_update(data):
     # delete previous data
     listbox.delete(0, 'end')
-    
-    # sorting data 
+
+    # sorting data
     data = sorted(data, key=str.lower)
 
     # put new data
@@ -66,7 +68,8 @@ def on_select(event):
 # --- main ---
 
 # test_list = ('apple', 'banana', 'Cranberry', 'dogwood', 'alpha', 'Acorn', 'Anise', 'Strawberry' )
-test_list = []#[ os.path.basename(paths[i]) for i in range(0, len(paths) - 1) ]
+# [ os.path.basename(paths[i]) for i in range(0, len(paths) - 1) ]
+test_list = []
 
 root = tk.Tk()
 
@@ -75,7 +78,10 @@ entry.pack()
 entry.bind('<KeyRelease>', on_keyrelease)
 
 listbox = tk.Listbox(root)
-listbox.pack()
+
+# see https://stackoverflow.com/questions/4318103/resize-tkinter-listbox-widget-when-window-resizes
+listbox.pack(side='left', fill='both', expand=True)
+
 #listbox.bind('<Double-Button-1>', on_select)
 listbox.bind('<<ListboxSelect>>', on_select)
 listbox_update(test_list)
