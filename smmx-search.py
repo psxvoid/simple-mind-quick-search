@@ -11,11 +11,14 @@ import os
 import tkinter as tk
 from fast_autocomplete import AutoComplete
 from scanners.smmx import scan
+from pathlib import Path
+import subprocess, os, platform
 
 rootdir = 'C:/Users/xxx/Dropbox/SimpleMind'
 words, paths = scan(rootdir)
 autocomplete = AutoComplete(words=words)
 contexts = []
+
 
 
 def on_keyrelease(event):
@@ -25,6 +28,8 @@ def on_keyrelease(event):
     value = value.strip().lower()
 
     # get data from test_list
+    global contexts
+    contexts = []
     if value == '':
         data = test_list
     else:
@@ -35,6 +40,7 @@ def on_keyrelease(event):
             for word in words:
                 # print('Word: {}'.format(word))
                 context = autocomplete.words[word]
+                contexts.append(context)
                 # print(context.filenames[0])
                 # for path in context.filenames:
                 #     filename = os.path.basename(path)
@@ -63,6 +69,24 @@ def on_select(event):
     print('(event) previous:', event.widget.get('active'))
     print('(event)  current:', event.widget.get(event.widget.curselection()))
     print('---')
+    current = event.widget.get(event.widget.curselection())
+    filenames = []
+    for context in contexts:
+        for filename in context.filenames:
+            if current in filename:
+                if not filename in filenames:
+                    filenames.append(filename)
+    if len(filenames) > 0:
+        print('Matched: {}'.format(len(filenames)))
+        for filename in filenames:
+            print('Openning file: {}'.format(filenames[0]))
+            filepath = Path(filename).absolute()
+            if platform.system() == 'Darwin':       # macOS
+                subprocess.call(('open', filepath))
+            elif platform.system() == 'Windows':    # Windows
+                os.startfile(filepath)
+            else:                                   # linux variants
+                subprocess.call(('xdg-open', filepath))
 
 
 # --- main ---
