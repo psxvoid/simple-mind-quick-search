@@ -1,7 +1,21 @@
 #!/usr/bin/env python3
+
+# fast-autocomplete is used for search
+# pip install fast-autocomplete
+# see https://pypi.org/project/fast-autocomplete/
+
+# pip install nltk
 # source: https://stackoverflow.com/questions/47839813/python-tkinter-autocomplete-combobox-with-like-search
 
+import os
 import tkinter as tk
+from fast_autocomplete import AutoComplete
+from scanners.smmx import scan
+
+rootdir = 'C:/Users/xxx/Dropbox/SimpleMind'
+words, paths = scan(rootdir)
+autocomplete = AutoComplete(words=words)
+contexts = []
 
 def on_keyrelease(event):
     
@@ -13,14 +27,22 @@ def on_keyrelease(event):
     if value == '':
         data = test_list
     else:
+        # search using fast-autocomplete
+        results = autocomplete.search(word=value, max_cost=3, size=3)
         data = []
-        for item in test_list:
-            if value in item.lower():
-                data.append(item)                
+        for words in results:
+            for word in words:
+                # print('Word: {}'.format(word))
+                context = autocomplete.words[word]
+                # print(context.filenames[0])
+                # for path in context.filenames:
+                #     filename = os.path.basename(path)
+                #     if filename not in data:
+                #         data.append(filename)
+                data = data + context.getNames()
 
     # update data in listbox
     listbox_update(data)
-    
     
 def listbox_update(data):
     # delete previous data
@@ -43,7 +65,8 @@ def on_select(event):
 
 # --- main ---
 
-test_list = ('apple', 'banana', 'Cranberry', 'dogwood', 'alpha', 'Acorn', 'Anise', 'Strawberry' )
+# test_list = ('apple', 'banana', 'Cranberry', 'dogwood', 'alpha', 'Acorn', 'Anise', 'Strawberry' )
+test_list = []#[ os.path.basename(paths[i]) for i in range(0, len(paths) - 1) ]
 
 root = tk.Tk()
 
