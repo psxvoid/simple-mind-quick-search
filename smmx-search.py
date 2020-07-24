@@ -35,18 +35,18 @@ def on_keyrelease(event):
     else:
         # search using fast-autocomplete
         results = autocomplete.search(word=value, max_cost=3, size=3)
+        filepaths = []
         data = []
         for words in results:
             for word in words:
-                # print('Word: {}'.format(word))
                 context = autocomplete.words[word]
-                contexts.append(context)
-                # print(context.filenames[0])
-                # for path in context.filenames:
-                #     filename = os.path.basename(path)
-                #     if filename not in data:
-                #         data.append(filename)
-                data = data + context.getNames()
+
+                for path in context.filenames:
+                    if path not in filepaths:
+                        filepaths.append(path)
+                        filename = os.path.basename(path)
+                        if filename not in data:
+                            data.append(filename)
 
     # update data in listbox
     listbox_update(data)
