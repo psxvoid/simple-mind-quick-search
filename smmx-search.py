@@ -121,8 +121,12 @@ listbox.pack(side='left', fill='both', expand=True)
 listbox.bind('<<ListboxSelect>>', on_select)
 listbox_update(test_list)
 
+def clear_entry():
+    entry.delete(0, tk.END)
+    entry.insert(0, "")
 
 def close(event):
+    clear_entry()
     root.withdraw()
 
     global is_opened
@@ -142,6 +146,7 @@ def toggle():
     global is_opened
 
     if is_opened:
+        clear_entry()
         root.withdraw()
     else:
         root.deiconify()
