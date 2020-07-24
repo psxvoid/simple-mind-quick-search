@@ -21,6 +21,7 @@ rootdir = 'C:/Users/xxx/Dropbox/SimpleMind'
 words, paths = scan(rootdir)
 autocomplete = AutoComplete(words=words)
 contexts = []
+selected = None
 
 
 def on_keyrelease(event):
@@ -72,11 +73,17 @@ def on_select(event):
     print('(event) previous:', event.widget.get('active'))
     print('(event)  current:', event.widget.get(event.widget.curselection()))
     print('---')
-    current = event.widget.get(event.widget.curselection())
+    global selected
+    selected = event.widget.get(event.widget.curselection())
+
+def on_open():
+    if selected is None:
+        print('Can\'t open - nothing is selected')
+        return
     filenames = []
     for context in contexts:
         for filename in context.filenames:
-            if current in filename:
+            if selected in filename:
                 if not filename in filenames:
                     filenames.append(filename)
     if len(filenames) > 0:
@@ -124,6 +131,8 @@ listbox_update(test_list)
 def clear_entry():
     entry.delete(0, tk.END)
     entry.insert(0, "")
+    global selected
+    selected = None
 
 def close(event):
     clear_entry()
@@ -154,8 +163,13 @@ def toggle():
 
     is_opened = not is_opened
 
+def open(event):
+    on_open()
+    toggle()
 
 root.bind('<Escape>', close)
+root.bind('<Return>', open)
+listbox.bind('<Double-Button-1>', open)
 
 
 def processGlobalHotkeys():
