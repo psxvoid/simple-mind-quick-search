@@ -101,6 +101,7 @@ root.minsize(width=300, height=600)
 entry = tk.Entry(root)
 entry.pack(fill='x')
 entry.bind('<KeyRelease>', on_keyrelease)
+entry.focus_set()
 
 listbox = tk.Listbox(root)
 
