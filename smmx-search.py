@@ -26,6 +26,10 @@ autocomplete = AutoComplete(words=words)
 contexts = []
 selected = None
 
+def remove_prefix(str, prefix):
+    if str.startswith(prefix):
+        return str[len(prefix):]
+    return str
 
 def on_keyrelease(event):
 
@@ -44,6 +48,7 @@ def on_keyrelease(event):
         for word in words_copy:
             if value in word.lower():
                 results.append([word])
+        results_full = [i[0] for i in results]
         results = results + autocomplete.search(word=value, max_cost=3, size=10)
         print('Results:')
         print(results)
@@ -58,7 +63,10 @@ def on_keyrelease(event):
                         filepaths.append(path)
                         filename = os.path.basename(path)
                         if filename not in data:
-                            data.append(filename)
+                            if word in results_full:
+                                data.append('[FULL] ' + filename)
+                            else:
+                                data.append(filename)
                 contexts.append(context)
 
     # update data in listbox
@@ -83,7 +91,7 @@ def on_select(event):
     print('(event) current:', event.widget.get(event.widget.curselection()))
     print('---')
     global selected
-    selected = event.widget.get(event.widget.curselection())
+    selected = remove_prefix(event.widget.get(event.widget.curselection()), '[FULL] ')
 
 def on_open():
     if selected is None:
