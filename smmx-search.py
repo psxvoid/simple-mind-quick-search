@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
 
-# fast-autocomplete is used for search
-# pip install fast-autocomplete
-# see https://pypi.org/project/fast-autocomplete/
-
-# pip install nltk
-# source: https://stackoverflow.com/questions/47839813/python-tkinter-autocomplete-combobox-with-like-search
-
 import os
 import tkinter as tk
 from fast_autocomplete import AutoComplete
@@ -121,8 +114,6 @@ def on_open():
 
 # --- main ---
 
-# test_list = ('apple', 'banana', 'Cranberry', 'dogwood', 'alpha', 'Acorn', 'Anise', 'Strawberry' )
-# [ os.path.basename(paths[i]) for i in range(0, len(paths) - 1) ]
 test_list = []
 
 root = tk.Tk()
@@ -141,7 +132,6 @@ listbox = tk.Listbox(root)
 # see https://stackoverflow.com/questions/4318103/resize-tkinter-listbox-widget-when-window-resizes
 listbox.pack(side='left', fill='both', expand=True)
 
-#listbox.bind('<Double-Button-1>', on_select)
 listbox.bind('<<ListboxSelect>>', on_select)
 listbox_update(test_list)
 
