@@ -1,0 +1,1 @@
+pythonw .\smmx-search.py
