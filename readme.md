@@ -14,14 +14,39 @@ Recently, I'd modified the manifest for SimpleMindPro app for Windows allowing i
 
 ## Installing Requirements:
 
+Install [pyenv](https://github.com/pyenv-win/pyenv-win). Then in the current directory run:
+
 ````ps1
-.\simplemindpro-search-env\Scripts\activate
 pip install -r requirements.txt
 ````
 
 ## Usage
 
 First of all, you have to set a correct root mind-map path in the main script. Then you can run it.
+
+Change `xxx` (or entire `rootdir`) in `./smmx-search.py` in the following line:
+
+```python
+rootdir = 'C:/Users/xxx/Dropbox/SimpleMind'
+```
+
+to a directory, containing your SimpleMind mind-maps, e.g.:
+
+```python
+rootdir = 'C:/Users/MyFancyUserName/Dropbox/SimpleMind'
+```
+
+then you can run the script using:
+
+```cmd
+python .\smmx-search.py
+```
+
+or
+
+```cmd
+.\start.bat
+```
 
 When the script starts, it scans the root mind-map directory and listens for <kbd>Alt+Shift+s</kbd> keyboard shortcut globally in the background. When the shortcut is triggered it opens a window where you can search whatever you like inside all your mind-maps. When you press the same shortcut or ESC, it closes the window. Notice, for now, the close button in the window itself works as an emergency closing facility - when you close the window via the close button, it closes; but when you press the global shortcut again it's causing the exception in the app because the window is destroyed and the background shortcut listener thread not handling this situation. This crash is causing the process to close.
 
