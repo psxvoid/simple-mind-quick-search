@@ -10,8 +10,10 @@ import platform
 from pynput import keyboard
 import threading
 import copy
+from pathlib import Path
 
-rootdir = 'C:/Users/xxx/Dropbox/SimpleMind'
+home = str(Path.home())
+rootdir = f'{home}/Dropbox/SimpleMind'
 words, paths = scan(rootdir)
 words_copy = copy.deepcopy(words)
 
