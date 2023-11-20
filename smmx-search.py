@@ -12,9 +12,16 @@ import threading
 import copy
 from pathlib import Path
 
-home = str(Path.home())
-rootdir = f'{home}/Dropbox/SimpleMind'
-words, paths = scan(rootdir)
+
+env_root_dir = os.getenv('SIMPLEMIND_ROOT')
+
+if env_root_dir:
+    smmx_root_dir = env_root_dir
+else:
+    home = str(Path.home())
+    smmx_root_dir = f'{home}/Dropbox/SimpleMind'
+
+words, paths = scan(smmx_root_dir)
 words_copy = copy.deepcopy(words)
 
 autocomplete = AutoComplete(words=words)
